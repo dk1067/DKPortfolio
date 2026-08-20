@@ -6,7 +6,7 @@ DB_PATH = "nba.db"
 
 
 @st.cache_data
-def load_players(_conn):
+def load_players(_conn: sqlite3.Connection) -> pd.DataFrame:
     query = """
     SELECT DISTINCT p.full_name
     FROM dim_players p
@@ -17,7 +17,7 @@ def load_players(_conn):
 
 
 @st.cache_data
-def load_player_games(_conn, player_name):
+def load_player_games(_conn: sqlite3.Connection, player_name: str) -> pd.DataFrame:
     query = """
     SELECT f.game_date, f.pts, f.ast, f.reb, f.min, t.full_name AS team_name
     FROM fact_player_games f
@@ -29,7 +29,7 @@ def load_player_games(_conn, player_name):
     return pd.read_sql(query, _conn, params=(player_name,))
 
 
-def main():
+def main() -> None:
     st.set_page_config(page_title="NBA Analytics Dashboard", layout="wide")
     st.title("NBA Player Trends Dashboard")
 
@@ -39,12 +39,12 @@ def main():
     player_name = st.selectbox("Choose a player", players_df["full_name"])
     games_df = load_player_games(conn, player_name)
 
-    current_team = games_df["team_name"].iloc[-1]
-    st.subheader(f"{current_team}")
-
     if games_df.empty:
         st.warning("No games found for this player.")
         return
+
+    current_team = games_df["team_name"].iloc[-1]
+    st.subheader(f"{current_team}")
 
     col1, col2, col3 = st.columns(3)
     col1.metric("PPG", round(games_df["pts"].mean(), 1))

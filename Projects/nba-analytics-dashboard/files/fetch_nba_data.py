@@ -11,7 +11,7 @@ OUTPUT_DIR = "data"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
-def fetch_team_game_logs(season=SEASON):
+def fetch_team_game_logs(season: str = SEASON) -> pd.DataFrame:
     """One row per team per game played that season (team box scores)."""
     print(f"Fetching team game logs for {season}...")
     log = leaguegamelog.LeagueGameLog(
@@ -22,7 +22,7 @@ def fetch_team_game_logs(season=SEASON):
     return log.get_data_frames()[0]
 
 
-def fetch_player_game_logs(season=SEASON):
+def fetch_player_game_logs(season: str = SEASON) -> pd.DataFrame:
     """One row per player per game played that season (player box scores)."""
     print(f"Fetching player game logs for {season}...")
     log = leaguegamelog.LeagueGameLog(
@@ -33,17 +33,17 @@ def fetch_player_game_logs(season=SEASON):
     return log.get_data_frames()[0]
 
 
-def fetch_teams():
+def fetch_teams() -> pd.DataFrame:
     """Static reference list of all NBA franchises (no season needed)."""
     return pd.DataFrame(static_teams.get_teams())
 
 
-def fetch_players():
+def fetch_players() -> pd.DataFrame:
     """Static reference list of all NBA players, active + historical."""
     return pd.DataFrame(static_players.get_players())
 
 
-def main():
+def main() -> None:
     teams_df = fetch_teams()
     teams_df.to_csv(f"{OUTPUT_DIR}/teams.csv", index=False)
     print(f"Saved {len(teams_df)} teams -> {OUTPUT_DIR}/teams.csv")

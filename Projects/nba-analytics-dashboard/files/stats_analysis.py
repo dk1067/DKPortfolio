@@ -3,10 +3,8 @@ import pandas as pd
 
 DB_PATH = "nba.db"
 
-print("SCRIPT STARTED")
 
-
-def load_team_summary(conn):
+def load_team_summary(conn: sqlite3.Connection) -> pd.DataFrame:
     """One row per team: avg 3PT attempts, avg points, win %."""
     query = """
     SELECT
@@ -20,7 +18,7 @@ def load_team_summary(conn):
     return pd.read_sql(query, conn)
 
 
-def correlation_3pt_vs_wins(df):
+def correlation_3pt_vs_wins(df: pd.DataFrame) -> float:
     """
     Correlation coefficient ranges from -1 to 1.
     Close to 0 = no linear relationship; close to 1 = strong positive;
@@ -32,7 +30,7 @@ def correlation_3pt_vs_wins(df):
     return corr
 
 
-def player_scoring_zscores(conn, min_games=20):
+def player_scoring_zscores(conn: sqlite3.Connection, min_games: int = 20) -> pd.DataFrame:
     """
     Z-score = (player's PPG - league average PPG) / league standard deviation.
     A z-score of +2 means a player scores 2 standard deviations above
@@ -51,7 +49,7 @@ def player_scoring_zscores(conn, min_games=20):
     return df.sort_values("z_score", ascending=False)
 
 
-def main():
+def main() -> None:
     conn = sqlite3.connect(DB_PATH)
 
     team_df = load_team_summary(conn)

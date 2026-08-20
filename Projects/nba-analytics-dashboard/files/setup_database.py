@@ -60,27 +60,29 @@ CREATE TABLE IF NOT EXISTS fact_player_games (
 """
 
 
-def create_schema(conn):
+def create_schema(conn: sqlite3.Connection) -> None:
     conn.executescript(SCHEMA)
 
 
-def load_teams(conn):
+def load_teams(conn: sqlite3.Connection) -> None:
     df = pd.read_csv(f"{DATA_DIR}/teams.csv")
     df = df.rename(columns={"id": "team_id"})
     df = df[["team_id", "full_name", "abbreviation", "city", "year_founded"]]
-    df.to_sql("dim_teams", conn, if_exists="replace", index=False)
+    conn.execute("DELETE FROM dim_teams")
+    df.to_sql("dim_teams", conn, if_exists="append", index=False)
     print(f"Loaded {len(df)} rows into dim_teams")
 
 
-def load_players(conn):
+def load_players(conn: sqlite3.Connection) -> None:
     df = pd.read_csv(f"{DATA_DIR}/players.csv")
     df = df.rename(columns={"id": "player_id"})
     df = df[["player_id", "full_name", "is_active"]]
-    df.to_sql("dim_players", conn, if_exists="replace", index=False)
+    conn.execute("DELETE FROM dim_players")
+    df.to_sql("dim_players", conn, if_exists="append", index=False)
     print(f"Loaded {len(df)} rows into dim_players")
 
 
-def _rename_stat_columns(df):
+def _rename_stat_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df.rename(columns={
         "GAME_ID": "game_id", "TEAM_ID": "team_id", "PLAYER_ID": "player_id",
         "SEASON_ID": "season", "GAME_DATE": "game_date", "MATCHUP": "matchup",
@@ -94,29 +96,31 @@ def _rename_stat_columns(df):
     })
 
 
-def load_team_games(conn):
+def load_team_games(conn: sqlite3.Connection) -> None:
     df = _rename_stat_columns(pd.read_csv(f"{DATA_DIR}/team_game_logs.csv"))
     cols = ["game_id", "team_id", "season", "game_date", "matchup", "win_loss",
             "pts", "fgm", "fga", "fg_pct", "fg3m", "fg3a", "fg3_pct",
             "ftm", "fta", "ft_pct", "oreb", "dreb", "reb", "ast", "stl", "blk",
             "tov", "pf", "plus_minus"]
     df = df[cols]
-    df.to_sql("fact_team_games", conn, if_exists="replace", index=False)
+    conn.execute("DELETE FROM fact_team_games")
+    df.to_sql("fact_team_games", conn, if_exists="append", index=False)
     print(f"Loaded {len(df)} rows into fact_team_games")
 
 
-def load_player_games(conn):
+def load_player_games(conn: sqlite3.Connection) -> None:
     df = _rename_stat_columns(pd.read_csv(f"{DATA_DIR}/player_game_logs.csv"))
     cols = ["game_id", "player_id", "team_id", "season", "game_date", "matchup",
             "win_loss", "min", "pts", "fgm", "fga", "fg_pct", "fg3m", "fg3a",
             "fg3_pct", "ftm", "fta", "ft_pct", "oreb", "dreb", "reb", "ast",
             "stl", "blk", "tov", "pf", "plus_minus"]
     df = df[cols]
-    df.to_sql("fact_player_games", conn, if_exists="replace", index=False)
+    conn.execute("DELETE FROM fact_player_games")
+    df.to_sql("fact_player_games", conn, if_exists="append", index=False)
     print(f"Loaded {len(df)} rows into fact_player_games")
 
 
-def main():
+def main() -> None:
     conn = sqlite3.connect(DB_PATH)
     create_schema(conn)
     load_teams(conn)
