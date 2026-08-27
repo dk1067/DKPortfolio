@@ -1,8 +1,11 @@
 import sqlite3
+from pathlib import Path
+
 import pandas as pd
 
-DB_PATH = "nba.db"
-DATA_DIR = "data"
+FILES_DIR = Path(__file__).resolve().parent
+DB_PATH = FILES_DIR / "nba.db"
+DATA_DIR = FILES_DIR.parent / "data"
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS dim_teams (

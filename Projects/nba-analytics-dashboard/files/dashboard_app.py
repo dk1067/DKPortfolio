@@ -1,8 +1,10 @@
 import sqlite3
+from pathlib import Path
+
 import pandas as pd
 import streamlit as st
 
-DB_PATH = "nba.db"
+DB_PATH = Path(__file__).resolve().parent / "nba.db"
 
 
 @st.cache_data

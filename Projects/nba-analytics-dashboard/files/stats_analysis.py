@@ -1,7 +1,9 @@
 import sqlite3
+from pathlib import Path
+
 import pandas as pd
 
-DB_PATH = "nba.db"
+DB_PATH = Path(__file__).resolve().parent / "nba.db"
 
 
 def load_team_summary(conn: sqlite3.Connection) -> pd.DataFrame:

@@ -1,12 +1,14 @@
 import os
 import time
+from pathlib import Path
+
 import pandas as pd
 from nba_api.stats.endpoints import leaguegamelog
 from nba_api.stats.static import teams as static_teams
 from nba_api.stats.static import players as static_players
 
 SEASON = "2024-25"     # just a hard code, change if want"
-OUTPUT_DIR = "data"
+OUTPUT_DIR = Path(__file__).resolve().parent.parent / "data"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 

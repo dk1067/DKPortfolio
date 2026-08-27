@@ -62,3 +62,10 @@ def test_correlation_perfect_negative_relationship():
     df = pd.DataFrame({"avg_3pt_made": [1, 2, 3, 4], "win_pct": [0.4, 0.3, 0.2, 0.1]})
 
     assert correlation_3pt_vs_wins(df) == pytest.approx(-1.0)
+
+def test_correlation_no_relationship():
+    df = pd.DataFrame({"avg_3pt_made": [1, 2, 3, 4], "win_pct": [0.5, 0.5, 0.5, 0.5]})
+
+    corr = correlation_3pt_vs_wins(df)
+
+    assert pd.isna(corr)
