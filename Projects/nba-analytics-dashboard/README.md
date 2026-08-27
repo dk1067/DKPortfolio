@@ -4,7 +4,7 @@ An interactive Streamlit dashboard for exploring NBA player trends, built on a d
 
 [![Tests](https://github.com/dk1067/DKPortfolio/actions/workflows/nba-dashboard-tests.yml/badge.svg)](https://github.com/dk1067/DKPortfolio/actions/workflows/nba-dashboard-tests.yml)
 
-**Live demo:** _add your Streamlit Community Cloud link here once deployed_
+**Live demo:** [dkportfolio2012.streamlit.app](https://dkportfolio2012.streamlit.app/)
 **Screenshot:** _add a screenshot or short GIF of the dashboard here_
 
 ---
@@ -37,7 +37,7 @@ python files/setup_database.py    # builds files/nba.db
 streamlit run files/dashboard_app.py
 ```
 
-Running the test suite:
+## Running the test suite:
 
 ```bash
 pip install -r requirements-dev.txt
