@@ -6,8 +6,6 @@ An interactive Streamlit dashboard for exploring NBA player trends, built on a d
 
 **Live demo:** [dkportfolio2012.streamlit.app](https://dkportfolio2012.streamlit.app/)
 
-**Screenshot:** _add a screenshot or short GIF of the dashboard here_
-
 ---
 
 ## The question
