@@ -12,6 +12,7 @@ def load_team_summary(conn: sqlite3.Connection) -> pd.DataFrame:
     SELECT
         team_id,
         AVG(fg3_pct) AS avg_3pt_made,
+        AVG(fg3a) AS avg_3pt_attempts,
         AVG(pts) AS avg_points,
         SUM(CASE WHEN win_loss = 'W' THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS win_pct
     FROM fact_team_games

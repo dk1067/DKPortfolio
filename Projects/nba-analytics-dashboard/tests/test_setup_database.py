@@ -28,9 +28,7 @@ def test_dim_teams_primary_key_is_enforced(conn):
 
 
 def test_load_teams_preserves_primary_key_constraint(conn):
-    # Regression test: to_sql(if_exists="replace") used to drop dim_teams and
-    # rebuild it from the DataFrame's inferred schema, silently discarding the
-    # PRIMARY KEY declared in SCHEMA. load_teams must load data without doing that.
+    # to_sql(if_exists="replace") silently drops the PRIMARY KEY on rebuild.
     load_teams(conn)
 
     columns = conn.execute("PRAGMA table_info(dim_teams)").fetchall()

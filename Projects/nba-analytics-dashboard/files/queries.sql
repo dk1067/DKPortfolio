@@ -4,8 +4,6 @@
 -- or open nba.db in a SQLite GUI like DB Browser for SQLite).
 -- Ordered roughly from easiest to hardest so you can learn as you go.
 
-    SELECT COUNT(*) FROM dim_players;-- sanity check: should return 123,000 rows
-
 -- 1. Top 10 scorers by total points this season (simple aggregate)
     SELECT p.full_name, SUM(f.pts) AS total_points
     FROM fact_player_games f
@@ -13,13 +11,6 @@
     GROUP BY p.full_name
     ORDER BY total_points DESC
     LIMIT 10;
-
--- Test A: GROUP BY + LIMIT, no ORDER BY
-   SELECT p.full_name, SUM(f.pts) AS total_points
-   FROM fact_player_games f
-   JOIN dim_players p ON f.player_id = p.player_id
-   GROUP BY p.full_name
-   LIMIT 3;
 
 -- 2. Players averaging 25+ points per game, min. 20 games played (GROUP BY + HAVING)
 SELECT p.full_name,
@@ -39,26 +30,6 @@ WHERE f.win_loss = 'W'
 GROUP BY t.full_name
 ORDER BY wins DESC;
 
-SELECT * FROM dim_teams LIMIT 2;
-
-SELECT * FROM dim_players LIMIT 5;
-SELECT * FROM fact_player_games LIMIT 5;
-
-SELECT SUM(losses) AS total_losses_league_wide
-FROM (
-    SELECT t.full_name, COUNT(*) AS losses
-    FROM fact_team_games f
-    JOIN dim_teams t ON f.team_id = t.team_id
-    WHERE f.win_loss = 'L'
-    GROUP BY t.full_name
-);
-
-SELECT COUNT(*) AS total_loss_rows
-FROM fact_team_games
-WHERE win_loss = 'L';
-
-SELECT COUNT(*) FROM fact_team_games;
-
 -- 4. Full game log for one player, joined to team name (multi-table JOIN)
 SELECT p.full_name, t.full_name AS team, f.game_date, f.min, f.pts, f.ast, f.reb
 FROM fact_player_games f
@@ -66,17 +37,6 @@ JOIN dim_players p ON f.player_id = p.player_id
 JOIN dim_teams t ON f.team_id = t.team_id
 WHERE p.full_name = 'LeBron James'
 ORDER BY f.game_date;
-
---testing
--- SELECT p.full_name, count(*) AS loss_count
--- FROM fact_player_games f
--- JOIN dim_players p ON f.player_id = p.player_id
--- JOIN dim_teams t ON f.team_id = t.team_id
--- WHERE f.win_loss = 'L' AND p.full_name = 'LeBron James'
--- GROUP BY p.full_name;
-
-
--- SELECT * FROM dim_players WHERE full_name = 'LeBron James';
 
 -- 5. Rolling 5-game scoring average (window function: AVG() OVER)
 SELECT
@@ -151,13 +111,3 @@ JOIN dim_teams t ON f.team_id = t.team_id
 WHERE t.full_name = 'Golden State Warriors'
 GROUP BY month
 ORDER BY month;
-
-SELECT
-        team_id,
-        AVG(fg3a) AS avg_3pt_attempts,
-        AVG(pts) AS avg_points,
-        SUM(CASE WHEN win_loss = 'W' THEN 1 ELSE 0 END) * 1.0 / COUNT(*) AS win_pct
-    FROM fact_team_games
-    GROUP BY team_id
-
-    SELECT MIN(fg3_pct), MAX(fg3_pct), AVG(fg3_pct) FROM fact_team_games
