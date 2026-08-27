@@ -2,8 +2,6 @@
 
 An interactive Streamlit dashboard for exploring NBA player trends, built on a data pipeline that ingests a full season of box scores into a normalized SQLite database.
 
-[![Tests](https://github.com/dk1067/DKPortfolio/actions/workflows/nba-dashboard-tests.yml/badge.svg)](https://github.com/dk1067/DKPortfolio/actions/workflows/nba-dashboard-tests.yml)
-
 **Live demo:** [dkportfolio2012.streamlit.app](https://dkportfolio2012.streamlit.app/)
 
 ---
